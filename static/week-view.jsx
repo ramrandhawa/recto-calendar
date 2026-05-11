@@ -34,14 +34,14 @@ function WeekView(props) {
   function getDayIndexFromX(x, rect, cols) {
     const gutter = 56;
     const colW = (rect.width - gutter) / cols;
-    const idx = Math.floor((x - gutter) / colW);
+    const idx = Math.floor((x - rect.left - gutter) / colW);
     return Math.max(0, Math.min(cols - 1, idx));
   }
 
   function startCreate(e, dayIdx) {
     if (e.target.closest(".event")) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const y = e.clientY - rect.top + scrollRef.current.scrollTop;
+    const y = e.clientY - rect.top;
     const m = pxToMin(y);
     setDrag({ kind: "create", dayIdx, startMin: m, endMin: m + 60 });
     e.preventDefault();
@@ -54,7 +54,7 @@ function WeekView(props) {
     const rect = grid.getBoundingClientRect();
     const cols = mobileDayIndex != null ? 1 : 7;
     const dayIdx = mobileDayIndex != null ? 0 : getDayIndexFromX(e.clientX, rect, cols);
-    const y = e.clientY - rect.top + scrollRef.current.scrollTop;
+    const y = e.clientY - rect.top;
     const m = pxToMin(y);
     if (drag.kind === "create") {
       setDrag({ ...drag, dayIdx, endMin: Math.max(drag.startMin + 30, m) });
@@ -106,7 +106,7 @@ function WeekView(props) {
     e.stopPropagation();
     e.preventDefault();
     const rect = gridRef.current.getBoundingClientRect();
-    const y = e.clientY - rect.top + scrollRef.current.scrollTop;
+    const y = e.clientY - rect.top;
     const m = pxToMin(y);
     const startD = new Date(ev.start);
     const endD = new Date(ev.end);
